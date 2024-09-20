@@ -1,0 +1,7 @@
+pandas
+numpy==1.26.4
+qdrant-client
+langchain-community
+sentence_transformers 
+rank_bm25
+fastembed
