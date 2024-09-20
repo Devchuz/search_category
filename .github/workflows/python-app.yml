@@ -1,0 +1,42 @@
+name: Python application
+
+# Controla cuándo debe ejecutarse el flujo de trabajo.
+# En este caso, se ejecutará cuando haya un push en la rama principal (main).
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Definimos los trabajos (jobs) que se ejecutarán.
+jobs:
+  build:
+
+    # Elige el sistema operativo (en este caso Ubuntu).
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Chequear el código desde el repositorio.
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Paso 2: Configurar Python
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'  # Puedes elegir la versión de Python que necesitas
+
+      # Paso 3: Instalar las dependencias del archivo requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Paso 4: Ejecutar el script que quieres correr
+      - name: Run script
+        run: |
+          python modules/data_load.py
+
+      # Puedes agregar más pasos como pruebas unitarias, linting, etc.
