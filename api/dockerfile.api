@@ -1,0 +1,28 @@
+# Usa una imagen base de Python
+FROM python:3.9-slim
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Instala las dependencias de compilación necesarias
+RUN apt-get update && apt-get install -y \
+    gcc \
+    build-essential \
+    python3-dev \
+    libffi-dev \
+    libssl-dev \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copia el archivo de requerimientos
+COPY requirements.txt .
+
+# Actualiza pip e instala las dependencias del proyecto
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
+
+# Copia todo el contenido del proyecto (incluyendo 'modules')
+COPY . .  
+
+# Especifica el comando predeterminado a ejecutar cuando se inicie el contenedor
+CMD ["uvicorn", "hybrid_search_api:app", "--host", "0.0.0.0", "--port", "8000"]
