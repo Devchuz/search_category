@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./search-app
+      dockerfile: dockerfile.remix
+    container_name: search-app-frontend
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./search-app:/app
+      - /app/node_modules
+    environment:
+      - API_URL=http://api:8000 # Actualizado para apuntar al servicio 'api'
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ./api
+      dockerfile: dockerfile.api
+    container_name: search-app-api
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./api:/app
+    environment:
+      - QDRANT_URL=qdrant
+      - QDRANT_PORT=6333
+      - COLLECTION_NAME=hybrid_search
+      - ALLOWED_ORIGINS=http://localhost:5173
+    depends_on:
+      - qdrant
+
+  qdrant:
+    image: qdrant/qdrant
+    container_name: search-app-qdrant
+    ports:
+      - '6333:6333'
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+volumes:
+  qdrant_storage:
