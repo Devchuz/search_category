@@ -1,0 +1,20 @@
+# Usa una imagen base oficial de Node.js (versión 18 con Alpine para ligereza)
+FROM node:18-alpine
+
+# Establece el directorio de trabajo en el contenedor
+WORKDIR /app
+
+# Copia los archivos de dependencias
+COPY package.json package-lock.json* ./
+
+# Instala las dependencias de la aplicación
+RUN npm install
+
+# Copia el resto de los archivos de la aplicación al contenedor
+COPY . .
+
+# Exponer el puerto en el que la aplicación Remix correrá
+EXPOSE 5173
+
+# Comando para iniciar la aplicación en modo desarrollo con recarga en caliente
+CMD ["npm", "run", "dev"]
